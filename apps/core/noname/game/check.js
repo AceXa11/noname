@@ -146,50 +146,34 @@ export class Check {
 		return game.Check.processSelection({ type: "target", items: targets, event, useCache, isSelectable });
 	}
 	skill(event) {
-		if (ui.skills) {
-			ui.skills.close();
-		}
-		if (ui.skills2) {
-			ui.skills2.close();
-		}
-		if (ui.skills3) {
-			ui.skills3.close();
-		}
-		if (event.skill || !get.noSelected() || _status.noconfirm) {
-			return;
-		}
+	ui.create.closeSkillPanels();
+	if (event.skill || !get.noSelected() || _status.noconfirm) {
+		return;
+	}
 
-		const player = event.player;
-		if (!event._skillChoice) {
-			event._skillChoice = game.expandSkills(player.getSkills("invisible").concat(lib.skill.global)).filter(skill => lib.filter.filterEnable(event, player, skill));
-		}
+	const player = event.player;
+	if (!event._skillChoice) {
+		event._skillChoice = game.expandSkills(player.getSkills("invisible").concat(lib.skill.global)).filter(skill => lib.filter.filterEnable(event, player, skill));
+	}
 
-		const skills = event._skillChoice.filter(i => event.isMine() || !event._aiexclude.includes(i));
-		const globallist = game.expandSkills(lib.skill.global.slice());
-		const ownedlist = game.expandSkills(player.getSkills("invisible", false));
+	const skills = event._skillChoice.filter(i => event.isMine() || !event._aiexclude.includes(i));
+	const globallist = game.expandSkills(lib.skill.global.slice());
+	const ownedlist = game.expandSkills(player.getSkills("invisible", false));
 
-		const ownedSkills = [],
-			globalSkills = [],
-			equipSkills = [];
-		skills.forEach(skill => {
-			if (globallist.includes(skill)) {
-				globalSkills.push(skill);
-			} else if (!ownedlist.includes(skill)) {
-				equipSkills.push(skill);
-			} else {
-				ownedSkills.push(skill);
-			}
-		});
+	const ownedSkills = [],
+		globalSkills = [],
+		equipSkills = [];
+	skills.forEach(skill => {
+		if (globallist.includes(skill)) {
+			globalSkills.push(skill);
+		} else if (!ownedlist.includes(skill)) {
+			equipSkills.push(skill);
+		} else {
+			ownedSkills.push(skill);
+		}
+	});
 
-		if (ownedSkills.length) {
-			ui.create.skills(ownedSkills);
-		}
-		if (globalSkills.length) {
-			ui.create.skills2(globalSkills);
-		}
-		if (equipSkills.length) {
-			ui.create.skills3(equipSkills);
-		}
+	ui.create.renderSkillPanels({ ownedSkills, globalSkills, equipSkills });
 	}
 	confirm(event, confirm) {
 		ui.arena.classList.add("selecting");

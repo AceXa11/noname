@@ -13,6 +13,61 @@ export class Create {
 	 * @type {(video: Videos, before: boolean) => void}
 	 */
 	videoNode;
+	closeSkillPanels() {
+		for (const panelName of ["skills", "skills2", "skills3"]) {
+			if (ui[panelName]) {
+				ui[panelName].close();
+				delete ui[panelName];
+			}
+		}
+	}
+	renderSkillPanel(panelName, skills) {
+		let same;
+		const currentPanel = ui[panelName];
+		if (currentPanel) {
+			const currentSkills = Array.isArray(currentPanel.skills) ? currentPanel.skills : [];
+			if (currentSkills.length == skills.length && currentPanel.style.display != "none") {
+				same = true;
+				for (let i = 0; i < skills.length; i++) {
+					if (currentSkills.includes(skills[i]) == false) {
+						same = false;
+						break;
+					}
+				}
+			}
+			if (same) {
+				return currentPanel;
+			}
+			currentPanel.close();
+			delete ui[panelName];
+		}
+		if (skills == undefined || skills.length == 0) {
+			return;
+		}
+		if (!_status.event.isMine()) {
+			_status.noupdatec = true;
+		}
+		const panel = ui.create.control(skills.concat([ui.click.skill]));
+		for (let i = 0; i < panel.childNodes.length; i++) {
+			panel.childNodes[i].innerHTML = get.skillTranslation(panel.childNodes[i].link, _status.event.player, true);
+		}
+		if (!_status.event.isMine()) {
+			panel.style.display = "none";
+		} else {
+			ui.updatec();
+		}
+		_status.noupdatec = false;
+		panel.skills = skills;
+		ui[panelName] = panel;
+		return panel;
+	}
+	renderSkillPanels({ ownedSkills, globalSkills, equipSkills } = {}) {
+		return {
+			owned: this.renderSkillPanel("skills", ownedSkills || []),
+			global: this.renderSkillPanel("skills2", globalSkills || []),
+			equip: this.renderSkillPanel("skills3", equipSkills || []),
+		};
+	}
 	/**
 	 * 创建身份牌实例
 	 */
@@ -2058,115 +2113,13 @@ export class Create {
 		}
 	}
 	skills(skills) {
-		var i, same;
-		if (ui.skills) {
-			if (ui.skills.skills.length == skills.length && ui.skills.style.display != "none") {
-				same = true;
-				for (i = 0; i < skills.length; i++) {
-					if (ui.skills.skills.includes(skills[i]) == false) {
-						same = false;
-						break;
-					}
-				}
-			}
-			if (same) {
-				return;
-			}
-			ui.skills.close();
-			delete ui.skills;
-		}
-		if (skills == undefined || skills.length == 0) {
-			return;
-		}
-		if (!_status.event.isMine()) {
-			_status.noupdatec = true;
-		}
-		ui.skills = ui.create.control(skills.concat([ui.click.skill]));
-		for (var i = 0; i < ui.skills.childNodes.length; i++) {
-			ui.skills.childNodes[i].innerHTML = get.skillTranslation(ui.skills.childNodes[i].link, _status.event.player, true);
-		}
-		if (!_status.event.isMine()) {
-			ui.skills.style.display = "none";
-		} else {
-			ui.updatec();
-		}
-		_status.noupdatec = false;
-		ui.skills.skills = skills;
-		return ui.skills;
+		return this.renderSkillPanel("skills", skills);
 	}
 	skills2(skills) {
-		var i, same;
-		if (ui.skills2) {
-			if (ui.skills2.skills.length == skills.length && ui.skills2.style.display != "none") {
-				same = true;
-				for (i = 0; i < skills.length; i++) {
-					if (ui.skills2.skills.includes(skills[i]) == false) {
-						same = false;
-						break;
-					}
-				}
-			}
-			if (same) {
-				return;
-			}
-			ui.skills2.close();
-			delete ui.skills2;
-		}
-		if (skills == undefined || skills.length == 0) {
-			return;
-		}
-		if (!_status.event.isMine()) {
-			_status.noupdatec = true;
-		}
-		ui.skills2 = ui.create.control(skills.concat([ui.click.skill]));
-		for (var i = 0; i < ui.skills2.childNodes.length; i++) {
-			ui.skills2.childNodes[i].innerHTML = get.skillTranslation(ui.skills2.childNodes[i].link, _status.event.player, true);
-		}
-		if (!_status.event.isMine()) {
-			ui.skills2.style.display = "none";
-		} else {
-			ui.updatec();
-		}
-		_status.noupdatec = false;
-		ui.skills2.skills = skills;
-		return ui.skills2;
+		return this.renderSkillPanel("skills2", skills);
 	}
 	skills3(skills) {
-		var i, same;
-		if (ui.skills3) {
-			if (ui.skills3.skills.length == skills.length && ui.skills3.style.display != "none") {
-				same = true;
-				for (i = 0; i < skills.length; i++) {
-					if (ui.skills3.skills.includes(skills[i]) == false) {
-						same = false;
-						break;
-					}
-				}
-			}
-			if (same) {
-				return;
-			}
-			ui.skills3.close();
-			delete ui.skills3;
-		}
-		if (skills == undefined || skills.length == 0) {
-			return;
-		}
-		if (!_status.event.isMine()) {
-			_status.noupdatec = true;
-		}
-		ui.skills3 = ui.create.control(skills.concat([ui.click.skill]));
-		for (var i = 0; i < ui.skills3.childNodes.length; i++) {
-			ui.skills3.childNodes[i].innerHTML = get.skillTranslation(ui.skills3.childNodes[i].link, _status.event.player, true);
-		}
-		if (!_status.event.isMine()) {
-			ui.skills3.style.display = "none";
-		} else {
-			ui.updatec();
-		}
-		_status.noupdatec = false;
-		ui.skills3.skills = skills;
-		return ui.skills3;
+		return this.renderSkillPanel("skills3", skills);
 	}
 	/**
 	 * 向当前事件注入牌的全选/反选按钮喵
