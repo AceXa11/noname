@@ -5094,7 +5094,7 @@ div[data-decoration="bronze"]::after {
 #window.dicepaused > #historybar {
 	opacity: 0.3 !important;
 }
-
+/* 
 #window[data-radius_size="reduce"] .dialog.scroll1,
 #window[data-radius_size="reduce"] .dialog.scroll2,
 #window[data-radius_size="reduce"] .dialog.withbg {
@@ -5175,7 +5175,7 @@ div[data-decoration="bronze"]::after {
 #window[data-radius_size="increase"] #splash > div,
 #window[data-radius_size="increase"].mobile:not(.chess) .player[data-position="0"] .equips {
 	border-radius: 16px;
-}
+} */
 
 .loading-screen {
 	background-color: black;

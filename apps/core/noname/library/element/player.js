@@ -12700,6 +12700,7 @@ export class Player extends HTMLDivElement {
 		const range = cards.reduce((range, card) => {
 			let newRange = false;
 			const info = get.info(card, false);
+			if(!info) {return range;}
 			if (info.distance) {
 				//如果存在attackRange 则通过attackRange动态获取攻击范围
 				if (typeof info.distance.attackRange == "function") {

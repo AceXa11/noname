@@ -3094,7 +3094,6 @@ export class Game {
 				Object.defineProperties(target, descriptors);
 			}
 		};
-		addOptions(extensionMenu, object.config);
 		addOptions(lib.help, object.help);
 
 		if (object.editable !== false && lib.config.show_extensionmaker) {
@@ -3110,38 +3109,6 @@ export class Game {
 				},
 			};
 		}
-		extensionMenu.delete = {
-			name: "删除此扩展",
-			clear: true,
-			onclick() {
-				if (this.innerHTML != "<span>确认删除</span>") {
-					this.innerHTML = "<span>确认删除</span>";
-					new Promise(resolve => setTimeout(resolve, 1000)).then(() => (this.innerHTML = "<span>删除此扩展</span>"));
-					return;
-				}
-				const page = this.parentNode,
-					start = page.parentNode.previousSibling;
-				page.remove();
-				if (start) {
-					const pageInStart = Array.from(start.childNodes).find(childNode => childNode.link == page);
-					if (pageInStart) {
-						let active = false;
-						if (pageInStart.classList.contains("active")) {
-							active = true;
-						}
-						pageInStart.remove();
-						if (active) {
-							start.firstChild.classList.add("active");
-							start.nextSibling.appendChild(start.firstChild.link);
-						}
-					}
-				}
-				game.removeExtension(name);
-				if (typeof object.onremove == "function") {
-					object.onremove();
-				}
-			},
-		};
 
 		lib.extensionMenu[extensionName] = extensionMenu;
 
@@ -3152,6 +3119,7 @@ export class Game {
 		if (stopImporting || !object || !lib.config[`${extensionName}_enable`]) {
 			return;
 		}
+		addOptions(extensionMenu, object.config);
 		Object.keys(object.config)
 			.filter(key => !(`${extensionName}_${key}` in lib.config))
 			.forEach(key => {
@@ -3219,6 +3187,38 @@ ${e instanceof Error ? e.stack : String(e)}`);
 			console.error(e);
 		}
 
+		extensionMenu.delete = {
+			name: "删除此扩展",
+			clear: true,
+			onclick() {
+				if (this.innerHTML != "<span>确认删除</span>") {
+					this.innerHTML = "<span>确认删除</span>";
+					new Promise(resolve => setTimeout(resolve, 1000)).then(() => (this.innerHTML = "<span>删除此扩展</span>"));
+					return;
+				}
+				const page = this.parentNode,
+					start = page.parentNode.previousSibling;
+				page.remove();
+				if (start) {
+					const pageInStart = Array.from(start.childNodes).find(childNode => childNode.link == page);
+					if (pageInStart) {
+						let active = false;
+						if (pageInStart.classList.contains("active")) {
+							active = true;
+						}
+						pageInStart.remove();
+						if (active) {
+							start.firstChild.classList.add("active");
+							start.nextSibling.appendChild(start.firstChild.link);
+						}
+					}
+				}
+				game.removeExtension(name);
+				if (typeof object.onremove == "function") {
+					object.onremove();
+				}
+			},
+		};
 		return name;
 	}
 	/**

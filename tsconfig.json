@@ -1,5 +1,9 @@
 {
-	"exclude": ["dist", "output", "node_modules"],
+	"exclude": [
+		"dist",
+		"output",
+		"node_modules"
+	],
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "ESNext",
@@ -8,6 +12,11 @@
 		"esModuleInterop": true,
 		"strict": true,
 		"noImplicitAny": false,
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"paths": {
+			"noname": [
+				"./apps/core/noname.js"
+			]
+		}
 	}
 }
